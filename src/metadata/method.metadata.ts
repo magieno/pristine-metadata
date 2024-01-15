@@ -2,6 +2,7 @@ import {ClassMetadata} from "./class.metadata";
 import {ClassInformationEnum} from "../enums/class-information.enum";
 import {MethodInformationInterface} from "../interfaces/method-information.interface";
 import {MethodInformationEnum} from "../enums/method-information.enum";
+import {BaseMetadata} from "./base.metadata";
 
 export class MethodMetadata {
     /**
@@ -57,7 +58,7 @@ export class MethodMetadata {
     }
 
     static getMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string): any {
-        return Reflect.getMetadata(metadataKeyname, target.prototype, propertyKey);
+        return BaseMetadata.getMetadata(metadataKeyname, target.prototype, propertyKey);
     }
 
     /**
@@ -74,7 +75,7 @@ export class MethodMetadata {
         MethodMetadata.methodSeen(target.prototype, propertyKey);
 
         // Define the element to the metadata using the "reflect-library".
-        Reflect.defineMetadata(metadataKeyname, element, target.prototype, propertyKey);
+        BaseMetadata.defineMetadata(metadataKeyname, element, target.prototype, propertyKey);
     }
 
     /**
@@ -90,34 +91,10 @@ export class MethodMetadata {
      * @param index
      */
     static setToMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, index: number | string, element: any) {
-        let metadata = MethodMetadata.getMetadata(target.prototype, propertyKey, metadataKeyname);
+        BaseMetadata.setToMetadata(metadataKeyname, index, element, target, propertyKey)
 
-        if(typeof index === "number") {
-            if(metadata === undefined) {
-                metadata = [];
-            }
-
-            if(index < -1) {
-                console.error(`The index '${index}' passed to 'MethodMetadata.setToMetadata()' cannot be less than '-1'.`);
-                return;
-            } else if(index === -1) {
-                metadata.push(element);
-            } else {
-                metadata[index] = element;
-            }
-        } else if(typeof index === "string") {
-            if(metadata === undefined) {
-                metadata = {};
-            }
-
-            metadata[index] = element;
-        }
-        else {
-            console.error(`The type '${typeof index}' for index '${index}' must be either a 'string' or 'number'.`);
-            return;
-        }
-
-        MethodMetadata.defineMetadata(target.prototype, propertyKey, metadataKeyname, metadata);
+        // Save to the target that we have seen this property.
+        MethodMetadata.methodSeen(target.prototype, propertyKey);
     }
 
     /**

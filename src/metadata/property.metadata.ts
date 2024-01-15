@@ -3,6 +3,7 @@ import {PropertyInformationInterface} from "../interfaces/property-information.i
 import {PropertyInformationEnum} from "../enums/property-information.enum";
 import {ClassMetadata} from "./class.metadata";
 import {ClassInformationEnum} from "../enums/class-information.enum";
+import {BaseMetadata} from "./base.metadata";
 
 export class PropertyMetadata {
     /**
@@ -50,7 +51,7 @@ export class PropertyMetadata {
     }
 
     static getMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string): any {
-        return Reflect.getMetadata(metadataKeyname, target.prototype, propertyKey);
+        return BaseMetadata.getMetadata(metadataKeyname, target.prototype, propertyKey);
     }
 
     /**
@@ -67,7 +68,7 @@ export class PropertyMetadata {
         PropertyMetadata.propertySeen(target.prototype, propertyKey);
 
         // Define the element to the metadata using the "reflect-library".
-        Reflect.defineMetadata(metadataKeyname, element, target.prototype, propertyKey);
+        BaseMetadata.defineMetadata(metadataKeyname, element, target.prototype, propertyKey);
     }
 
     /**
@@ -83,34 +84,10 @@ export class PropertyMetadata {
      * @param index
      */
     static setToMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, index: number | string, element: any) {
-        let metadata = PropertyMetadata.getMetadata(target.prototype, propertyKey, metadataKeyname);
+        BaseMetadata.setToMetadata(metadataKeyname, index, element, target, propertyKey)
 
-        if(typeof index === "number") {
-            if(metadata === undefined) {
-                metadata = [];
-            }
-
-            if(index < -1) {
-                console.error(`The index '${index}' passed to 'PropertyMetadata.setToMetadata()' cannot be less than '-1'.`);
-                return;
-            } else if(index === -1) {
-                metadata.push(element);
-            } else {
-                metadata[index] = element;
-            }
-        } else if(typeof index === "string") {
-            if(metadata === undefined) {
-                metadata = {};
-            }
-
-            metadata[index] = element;
-        }
-        else {
-            console.error(`The type '${typeof index}' for index '${index}' must be either a 'string' or 'number'.`);
-            return;
-        }
-
-        PropertyMetadata.defineMetadata(target.prototype, propertyKey, metadataKeyname, metadata);
+        // We have seen this property.
+        PropertyMetadata.propertySeen(target.prototype, propertyKey);
     }
 
     /**

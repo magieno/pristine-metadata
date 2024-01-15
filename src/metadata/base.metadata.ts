@@ -1,6 +1,44 @@
 export abstract class BaseMetadata {
-    static setToMetadata(metadataKeyname: string, target: any, index: number | string, element: any, propertyKey?: string | symbol) {
-        let metadata = Reflect.getMetadata(metadataKeyname, target, propertyKey);
+    static getMetadata(metadataKeyname: string, target: any, propertyKey?: string | symbol): any {
+        if(propertyKey) {
+            Reflect.getMetadata(metadataKeyname, target.prototype, propertyKey);
+        } else {
+            Reflect.getMetadata(metadataKeyname, target.prototype);
+        }
+    }
+
+    /**
+     * This method wraps the `defineMetadata` method of the "reflect-metadata" library. It also keeps track of the
+     * property seen and adds them to the target.
+     *
+     * @param target
+     * @param propertyKey
+     * @param metadataKeyname
+     * @param element
+     */
+    static defineMetadata(metadataKeyname: string, element: any, target: any, propertyKey?: string | symbol) {
+        if(propertyKey) {
+            // Define the element to the metadata using the "reflect-library".
+            Reflect.defineMetadata(metadataKeyname, element, target, propertyKey);
+        } else {
+            Reflect.getMetadata(metadataKeyname, element, target.prototype);
+        }
+    }
+
+    /**
+     * This method assumes that the object at `metadataKeyname` will either be an array of an object. It will be assumed
+     * to be an array if the type of index is a number. It will be assumed to be an object if the type is a string.
+     *
+     * If you pass -1, the element will simply be appended at the end of the array.
+     *
+     * @param target
+     * @param propertyKey
+     * @param metadataKeyname
+     * @param element
+     * @param index
+     */
+    static setToMetadata(metadataKeyname: string, index: number | string, element: any, target: any, propertyKey?: string | symbol) {
+        let metadata = BaseMetadata.getMetadata(metadataKeyname, target, propertyKey);
 
         if(typeof index === "number") {
             if(metadata === undefined) {
@@ -27,6 +65,6 @@ export abstract class BaseMetadata {
             return;
         }
 
-        PropertyMetadata.defineMetadata(target.prototype, propertyKey, metadataKeyname, metadata);
+        BaseMetadata.defineMetadata(metadataKeyname, metadata, target.prototype, propertyKey);
     }
 }
