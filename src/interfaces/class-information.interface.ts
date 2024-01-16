@@ -1,6 +1,4 @@
 export interface ClassInformationInterface {
-    //name: string;
-
     properties: string[];
 
     methods: string[];

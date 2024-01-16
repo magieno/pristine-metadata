@@ -1,7 +1,7 @@
 import {PropertyMetadata} from "./property.metadata";
 import {property} from "../decorators/property.decorator";
 import {classMetadata} from "../decorators/classMetadata.decorator";
-import {methodMetadata} from "../decorators/methodMetadata.decorator";
+import {method} from "../decorators/method.decorator";
 import {ClassMetadata} from "./class.metadata";
 import {MethodMetadata} from "./method.metadata";
 import {array} from "../decorators/array.decorator";
@@ -36,11 +36,11 @@ class ClassForTestingPurposes {
     @array(Child)
     children: Child[];
 
-    @methodMetadata()
+    @method()
     getTitle(capitalize: boolean): string {
         return this.title;
     }
-    @methodMetadata()
+    @method()
     get titleAccessor(): string {
         return this.title;
     }
@@ -77,6 +77,11 @@ describe("Metadata", () =>{
         expect(propertyInformation.arrayMemberType).toBe("Child");
 
         const methodInformation = MethodMetadata.getInformation(ClassForTestingPurposes, "getTitle");
+        expect(methodInformation.returnType).toBe("String")
+        expect(methodInformation.parameterTypes).toBeDefined()
+        expect(methodInformation.parameterTypes!.length).toBe(1)
+        expect(methodInformation.parameterTypes![0]).toBe("Boolean")
+
         const methodInformation2 = MethodMetadata.getInformation(ClassForTestingPurposes, "titleAccessor");
 
         const classInformation = ClassMetadata.getInformation(ClassForTestingPurposes);

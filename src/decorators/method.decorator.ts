@@ -7,7 +7,7 @@ import {MethodMetadata} from "../metadata/method.metadata";
  * It's used to track for example all the properties and methods on an object so they can be retrieved even if the
  * object is empty.
  */
-export const methodMetadata = () => {
+export const method = () => {
     return (target: any, propertyKey: string | symbol) => {
         MethodMetadata.methodSeen(target.constructor, propertyKey);
     };

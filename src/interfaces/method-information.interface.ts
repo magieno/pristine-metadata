@@ -13,7 +13,7 @@ export interface MethodInformationInterface {
 
     parameterTypeObjects?: any[];
 
-    decorators?: string[];
+    //decorators?: string[]; // todo: find a way to support that.
 
     metadata?: {[id in string]: any};
 }

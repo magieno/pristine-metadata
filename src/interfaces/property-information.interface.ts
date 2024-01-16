@@ -5,7 +5,7 @@ export interface PropertyInformationInterface {
 
     typeObject?: any;
 
-    decorators?: string[];
+    //decorators?: string[]; // todo: find a way to support that.
 
     isNullable?:boolean;
 
