@@ -1,9 +1,9 @@
 export abstract class BaseMetadata {
     static getMetadata(metadataKeyname: string, target: any, propertyKey?: string | symbol): any {
         if(propertyKey) {
-            Reflect.getMetadata(metadataKeyname, target.prototype, propertyKey);
+            return Reflect.getMetadata(metadataKeyname, target, propertyKey);
         } else {
-            Reflect.getMetadata(metadataKeyname, target.prototype);
+            return Reflect.getMetadata(metadataKeyname, target);
         }
     }
 
@@ -21,7 +21,7 @@ export abstract class BaseMetadata {
             // Define the element to the metadata using the "reflect-library".
             Reflect.defineMetadata(metadataKeyname, element, target, propertyKey);
         } else {
-            Reflect.getMetadata(metadataKeyname, element, target.prototype);
+            Reflect.defineMetadata(metadataKeyname, element, target);
         }
     }
 
@@ -36,8 +36,9 @@ export abstract class BaseMetadata {
      * @param metadataKeyname
      * @param element
      * @param index
+     * @param skipIfDuplicate Indicates if the insertion should be skipped if it already exists
      */
-    static setToMetadata(metadataKeyname: string, index: number | string, element: any, target: any, propertyKey?: string | symbol) {
+    static setToMetadata(metadataKeyname: string, index: number | string, element: any, target: any, skipIfDuplicate: boolean = true, propertyKey?: string | symbol) {
         let metadata = BaseMetadata.getMetadata(metadataKeyname, target, propertyKey);
 
         if(typeof index === "number") {
@@ -49,6 +50,12 @@ export abstract class BaseMetadata {
                 console.error(`The index '${index}' passed to '**Metadata.setToMetadata()' cannot be less than '-1'.`);
                 return;
             } else if(index === -1) {
+                const found = (metadata as any[]).includes(element);
+
+                if(found && skipIfDuplicate) {
+                    return;
+                }
+
                 metadata.push(element);
             } else {
                 metadata[index] = element;
@@ -65,6 +72,6 @@ export abstract class BaseMetadata {
             return;
         }
 
-        BaseMetadata.defineMetadata(metadataKeyname, metadata, target.prototype, propertyKey);
+        BaseMetadata.defineMetadata(metadataKeyname, metadata, target, propertyKey);
     }
 }

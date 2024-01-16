@@ -1,9 +1,10 @@
 import {PropertyMetadata} from "./property.metadata";
-import {propertyMetadata} from "../decorators/propertyMetadata.decorator";
+import {property} from "../decorators/property.decorator";
 import {classMetadata} from "../decorators/classMetadata.decorator";
 import {methodMetadata} from "../decorators/methodMetadata.decorator";
 import {ClassMetadata} from "./class.metadata";
 import {MethodMetadata} from "./method.metadata";
+import {array} from "../decorators/array.decorator";
 
 
 
@@ -14,22 +15,25 @@ class Child {
 
 @classMetadata()
 class ClassForTestingPurposes {
-    @propertyMetadata()
+    @property()
     title: string;
 
-    @propertyMetadata()
+    @property()
     createdAt: Date;
 
-    @propertyMetadata()
+    @property()
     rank: number;
 
-    @propertyMetadata()
+    @property({nullable: true})
+    nullableField?: string;
+
+    @array(String)
     array: string[];
 
-    @propertyMetadata()
+    @property()
     child: Child;
 
-    @propertyMetadata()
+    @array(Child)
     children: Child[];
 
     @methodMetadata()
@@ -45,16 +49,40 @@ class ClassForTestingPurposes {
 
 describe("Metadata", () =>{
     it("should return the Information fully filled for each property.", () => {
-        const propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes, "title");
-        const propertyInformation2 = PropertyMetadata.getInformation(ClassForTestingPurposes, "createdAt");
-        const propertyInformation3 = PropertyMetadata.getInformation(ClassForTestingPurposes, "child");
-        const propertyInformation4 = PropertyMetadata.getInformation(ClassForTestingPurposes, "children");
-        const propertyInformation5 = PropertyMetadata.getInformation(ClassForTestingPurposes, "array");
+        let propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes, "title");
+        expect(propertyInformation.type).toBe("String");
+        expect(propertyInformation.name).toBe("title");
 
-        const classInformation = ClassMetadata.getInformation(ClassForTestingPurposes);
+        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes, "createdAt");
+        expect(propertyInformation.type).toBe("Date");
+        expect(propertyInformation.name).toBe("createdAt");
+
+        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes, "child");
+        expect(propertyInformation.type).toBe("Child");
+        expect(propertyInformation.name).toBe("child");
+
+        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes, "array");
+        expect(propertyInformation.type).toBe("Array");
+        expect(propertyInformation.name).toBe("array");
+        expect(propertyInformation.arrayMemberType).toBe("String");
+
+        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes, "nullableField");
+        expect(propertyInformation.type).toBe("String");
+        expect(propertyInformation.name).toBe("nullableField");
+        expect(propertyInformation.isNullable).toBeTruthy();
+
+        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes, "children");
+        expect(propertyInformation.type).toBe("Array");
+        expect(propertyInformation.name).toBe("children");
+        expect(propertyInformation.arrayMemberType).toBe("Child");
 
         const methodInformation = MethodMetadata.getInformation(ClassForTestingPurposes, "getTitle");
         const methodInformation2 = MethodMetadata.getInformation(ClassForTestingPurposes, "titleAccessor");
+
+        const classInformation = ClassMetadata.getInformation(ClassForTestingPurposes);
+        expect(classInformation.properties.length).toBe(7);
+        expect(classInformation.methods.length).toBe(2)
+
 
 
         const a = 0;

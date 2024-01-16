@@ -24,6 +24,8 @@ export class PropertyMetadata {
         for (const key of keys) {
             const propertyMetadata = PropertyMetadata.getMetadata(target, propertyKey, key);
 
+
+            //Reflect.getMetadata(key, target.prototype, propertyKey);//
             if(propertyMetadata === undefined) {
                 continue;
             }
@@ -36,6 +38,13 @@ export class PropertyMetadata {
                 case PropertyInformationEnum.Decorators:
                     propertyInformation.decorators = propertyMetadata;
                     break;
+                case PropertyInformationEnum.Nullable:
+                    propertyInformation.isNullable = propertyMetadata;
+                    break;
+                case PropertyInformationEnum.ArrayMemberType:
+                    propertyInformation.arrayMemberObject = propertyMetadata;
+                    propertyInformation.arrayMemberType = propertyMetadata.name;
+                    break;
                 default:
                     (propertyInformation.metadata as any)[key] = propertyMetadata;
                     break;
@@ -46,8 +55,9 @@ export class PropertyMetadata {
     }
 
     static propertySeen(target: any, propertyKey: string | symbol) {
-        // Here we explicitly don't pass target.prototype because we expect that ClassMetadata will do it for us.
-        ClassMetadata.appendToMetadata(target, ClassInformationEnum.Properties, propertyKey)
+        // We don't pass target.prototype here since when we set metadata on the class, we want to set it on the target
+        // Therefore, ClassMetadata expects the target and not the prototype.
+        ClassMetadata.appendToMetadata(target.constructor, ClassInformationEnum.Properties, propertyKey, true)
     }
 
     static getMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string): any {
@@ -65,10 +75,10 @@ export class PropertyMetadata {
      */
     static defineMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, element: any) {
         // Save to the target that we have seen this property.
-        PropertyMetadata.propertySeen(target.prototype, propertyKey);
+        PropertyMetadata.propertySeen(target, propertyKey);
 
         // Define the element to the metadata using the "reflect-library".
-        BaseMetadata.defineMetadata(metadataKeyname, element, target.prototype, propertyKey);
+        BaseMetadata.defineMetadata(metadataKeyname, element, target, propertyKey);
     }
 
     /**
@@ -83,11 +93,11 @@ export class PropertyMetadata {
      * @param element
      * @param index
      */
-    static setToMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, index: number | string, element: any) {
-        BaseMetadata.setToMetadata(metadataKeyname, index, element, target, propertyKey)
+    static setToMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, index: number | string, element: any, skipIfDuplicate: boolean = true) {
+        BaseMetadata.setToMetadata(metadataKeyname, index, element, target, skipIfDuplicate, propertyKey)
 
         // We have seen this property.
-        PropertyMetadata.propertySeen(target.prototype, propertyKey);
+        PropertyMetadata.propertySeen(target, propertyKey);
     }
 
     /**
@@ -98,7 +108,7 @@ export class PropertyMetadata {
      * @param metadataKeyname
      * @param element
      */
-    static appendToMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, element: any) {
-        PropertyMetadata.setToMetadata(target.prototype, propertyKey, metadataKeyname, -1, element);
+    static appendToMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, element: any, skipIfDuplicate: boolean = true) {
+        PropertyMetadata.setToMetadata(target, propertyKey, metadataKeyname, -1, element, skipIfDuplicate);
     }
 }

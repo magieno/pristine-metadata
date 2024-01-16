@@ -53,8 +53,9 @@ export class MethodMetadata {
     }
 
     static methodSeen(target: any, propertyKey: string | symbol) {
-        // Here we explicitly don't pass target.prototype because we expect that ClassMetadata will do it for us.
-        ClassMetadata.appendToMetadata(target, ClassInformationEnum.Methods, propertyKey)
+        // We don't pass target.prototype here since when we set metadata on the class, we want to set it on the target
+        // Therefore, ClassMetadata expects the target and not the prototype.
+        ClassMetadata.appendToMetadata(target, ClassInformationEnum.Methods, propertyKey, true)
     }
 
     static getMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string): any {
@@ -72,10 +73,10 @@ export class MethodMetadata {
      */
     static defineMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, element: any) {
         // Save to the target that we have seen this property.
-        MethodMetadata.methodSeen(target.prototype, propertyKey);
+        MethodMetadata.methodSeen(target, propertyKey);
 
         // Define the element to the metadata using the "reflect-library".
-        BaseMetadata.defineMetadata(metadataKeyname, element, target.prototype, propertyKey);
+        BaseMetadata.defineMetadata(metadataKeyname, element, target, propertyKey);
     }
 
     /**
@@ -90,11 +91,11 @@ export class MethodMetadata {
      * @param element
      * @param index
      */
-    static setToMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, index: number | string, element: any) {
-        BaseMetadata.setToMetadata(metadataKeyname, index, element, target, propertyKey)
+    static setToMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, index: number | string, element: any, skipIfDuplicate: boolean = true) {
+        BaseMetadata.setToMetadata(metadataKeyname, index, element, target, skipIfDuplicate, propertyKey)
 
         // Save to the target that we have seen this property.
-        MethodMetadata.methodSeen(target.prototype, propertyKey);
+        MethodMetadata.methodSeen(target, propertyKey);
     }
 
     /**
@@ -105,7 +106,7 @@ export class MethodMetadata {
      * @param metadataKeyname
      * @param element
      */
-    static appendToMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, element: any) {
-        MethodMetadata.setToMetadata(target.prototype, propertyKey, metadataKeyname, -1, element);
+    static appendToMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, element: any, skipIfDuplicate: boolean = true) {
+        MethodMetadata.setToMetadata(target, propertyKey, metadataKeyname, -1, element, skipIfDuplicate);
     }
 }

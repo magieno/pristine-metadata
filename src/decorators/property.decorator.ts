@@ -1,4 +1,5 @@
 import {PropertyMetadata} from "../metadata/property.metadata";
+import {PropertyInformationEnum} from "../enums/property-information.enum";
 
 /**
  * This decorator does absolutely nothing, except making sure that the types will be properly defined. If you have
@@ -7,8 +8,12 @@ import {PropertyMetadata} from "../metadata/property.metadata";
  * It's used to track for example all the properties and methods on an object so they can be retrieved even if the
  * object is empty.
  */
-export const propertyMetadata = () => {
+export const property = (options?:{nullable: boolean}) => {
     return (target: any, propertyKey: string | symbol) => {
+        if(options) {
+            PropertyMetadata.defineMetadata(target, propertyKey, PropertyInformationEnum.Nullable, options.nullable)
+        }
+
         PropertyMetadata.propertySeen(target, propertyKey);
     };
 }

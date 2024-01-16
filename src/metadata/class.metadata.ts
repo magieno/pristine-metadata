@@ -17,10 +17,10 @@ export class ClassMetadata {
         };
 
         // Retrieve all the keys from the metadata
-        const keys = Reflect.getMetadataKeys(target.prototype);
+        const keys = Reflect.getMetadataKeys(target);
 
         for (const key of keys) {
-            const classMetadata = ClassMetadata.getMetadata(target.prototype, key);
+            const classMetadata = ClassMetadata.getMetadata(target, key);
 
             if(classMetadata === undefined) {
                 continue;
@@ -71,8 +71,8 @@ export class ClassMetadata {
      * @param element
      * @param index
      */
-    static setToMetadata(target: any, metadataKeyname: string, index: number | string, element: any) {
-        BaseMetadata.setToMetadata(metadataKeyname, index, element, target)
+    static setToMetadata(target: any, metadataKeyname: string, index: number | string, element: any, skipIfDuplicate: boolean = true) {
+        BaseMetadata.setToMetadata(metadataKeyname, index, element, target, skipIfDuplicate)
     }
 
     /**
@@ -82,7 +82,7 @@ export class ClassMetadata {
      * @param metadataKeyname
      * @param element
      */
-    static appendToMetadata(target: any, metadataKeyname: string, element: any) {
-        ClassMetadata.setToMetadata(target, metadataKeyname, -1, element);
+    static appendToMetadata(target: any, metadataKeyname: string, element: any, skipIfDuplicate: boolean = true) {
+        ClassMetadata.setToMetadata(target, metadataKeyname, -1, element, skipIfDuplicate);
     }
 }
