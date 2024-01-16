@@ -9,11 +9,11 @@ export interface MethodInformationInterface {
 
     returnTypeObject?: any;
 
-    parameterTypes?: string[];
+    parameterTypes: string[];
 
-    parameterTypeObjects?: any[];
+    parameterTypeObjects: any[];
 
-    //decorators?: string[]; // todo: find a way to support that.
+    decorators?: string[];
 
     metadata?: {[id in string]: any};
 }

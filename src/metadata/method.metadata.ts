@@ -15,6 +15,8 @@ export class MethodMetadata {
         let methodInformation: MethodInformationInterface = {
             name: propertyKey,
             metadata: {},
+            parameterTypes: [],
+            parameterTypeObjects:[],
         };
 
         // Retrieve all the keys from the metadata

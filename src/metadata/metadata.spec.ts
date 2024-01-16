@@ -40,9 +40,15 @@ class ClassForTestingPurposes {
     getTitle(capitalize: boolean): string {
         return this.title;
     }
+
     @method()
-    get titleAccessor(): string {
-        return this.title;
+    get childAccessor(): Child {
+        return this.child;
+    }
+
+    @method()
+    set rankAccessor(rank: number) {
+        this.rank = rank;
     }
 }
 
@@ -61,6 +67,10 @@ describe("Metadata", () =>{
         expect(propertyInformation.type).toBe("Child");
         expect(propertyInformation.name).toBe("child");
 
+        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes, "rank");
+        expect(propertyInformation.type).toBe("Number");
+        expect(propertyInformation.name).toBe("rank");
+
         propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes, "array");
         expect(propertyInformation.type).toBe("Array");
         expect(propertyInformation.name).toBe("array");
@@ -76,20 +86,26 @@ describe("Metadata", () =>{
         expect(propertyInformation.name).toBe("children");
         expect(propertyInformation.arrayMemberType).toBe("Child");
 
-        const methodInformation = MethodMetadata.getInformation(ClassForTestingPurposes, "getTitle");
+        let methodInformation = MethodMetadata.getInformation(ClassForTestingPurposes, "getTitle");
         expect(methodInformation.returnType).toBe("String")
         expect(methodInformation.parameterTypes).toBeDefined()
         expect(methodInformation.parameterTypes!.length).toBe(1)
         expect(methodInformation.parameterTypes![0]).toBe("Boolean")
 
-        const methodInformation2 = MethodMetadata.getInformation(ClassForTestingPurposes, "titleAccessor");
+        methodInformation = MethodMetadata.getInformation(ClassForTestingPurposes, "childAccessor");
+        // Since this is a getter, there is no return type but only the type of the "property" since it should technically be treated as one
+        expect(methodInformation.type).toBe("Child")
+        expect(methodInformation.parameterTypes).toBeDefined()
+        expect(methodInformation.parameterTypes!.length).toBe(0)
+
+        methodInformation = MethodMetadata.getInformation(ClassForTestingPurposes, "rankAccessor");
+        // Since this is a getter, there is no return type but only the type of the "property" since it should technically be treated as one
+        expect(methodInformation.type).toBe("Number")
+        expect(methodInformation.parameterTypes).toBeDefined()
+        expect(methodInformation.parameterTypes!.length).toBe(1)
 
         const classInformation = ClassMetadata.getInformation(ClassForTestingPurposes);
         expect(classInformation.properties.length).toBe(7);
-        expect(classInformation.methods.length).toBe(2)
-
-
-
-        const a = 0;
+        expect(classInformation.methods.length).toBe(3)
     })
 })
