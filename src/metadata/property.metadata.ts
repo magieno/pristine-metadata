@@ -24,8 +24,6 @@ export class PropertyMetadata {
         for (const key of keys) {
             const propertyMetadata = PropertyMetadata.getMetadata(target, propertyKey, key);
 
-
-            //Reflect.getMetadata(key, target.prototype, propertyKey);//
             if(propertyMetadata === undefined) {
                 continue;
             }

@@ -6,8 +6,6 @@ import {ClassMetadata} from "./class.metadata";
 import {MethodMetadata} from "./method.metadata";
 import {array} from "../decorators/array.decorator";
 
-
-
 @classMetadata()
 class Child {
     name: string;
@@ -51,7 +49,6 @@ class ClassForTestingPurposes {
         this.rank = rank;
     }
 }
-
 
 describe("Metadata", () =>{
     it("should return the Information fully filled for each property.", () => {

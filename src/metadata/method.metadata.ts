@@ -6,24 +6,24 @@ import {BaseMetadata} from "./base.metadata";
 
 export class MethodMetadata {
     /**
-     * This method structures and return all the metadata information that we have on this target and property.
+     * This method structures and return all the metadata information that we have on this target and method.
      * @param target
-     * @param propertyKey
+     * @param methodName
      */
-    static getInformation(target: any, propertyKey: string | symbol): MethodInformationInterface {
+    static getInformation(target: any, methodName: string | symbol): MethodInformationInterface {
 
         let methodInformation: MethodInformationInterface = {
-            name: propertyKey,
+            name: methodName,
             metadata: {},
             parameterTypes: [],
             parameterTypeObjects:[],
         };
 
         // Retrieve all the keys from the metadata
-        const keys = Reflect.getMetadataKeys(target.prototype, propertyKey);
+        const keys = Reflect.getMetadataKeys(target.prototype, methodName);
 
         for (const key of keys) {
-            const methodMetadata = MethodMetadata.getMetadata(target, propertyKey, key);
+            const methodMetadata = MethodMetadata.getMetadata(target, methodName, key);
 
             if(methodMetadata === undefined) {
                 continue;
@@ -54,31 +54,41 @@ export class MethodMetadata {
         return methodInformation;
     }
 
-    static methodSeen(target: any, propertyKey: string | symbol) {
-        // We don't pass target.prototype here since when we set metadata on the class, we want to set it on the target
-        // Therefore, ClassMetadata expects the target and not the prototype.
-        ClassMetadata.appendToMetadata(target, ClassInformationEnum.Methods, propertyKey, true)
+    /**
+     * This method is used to add to the target's metadata that a method has been discovered in a
+     * decorator. Methods are not "saved" in the metadata and this library does it.
+     * @param target
+     * @param methodName
+     */
+    static methodSeen(target: any, methodName: string | symbol) {
+        ClassMetadata.appendToMetadata(target, ClassInformationEnum.Methods, methodName, true)
     }
 
-    static getMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string): any {
-        return BaseMetadata.getMetadata(metadataKeyname, target.prototype, propertyKey);
+    /**
+     * This method simply retrieves the metadata associated to a method.
+     * @param target
+     * @param methodName
+     * @param metadataKeyname
+     */
+    static getMetadata(target: any, methodName: string | symbol, metadataKeyname: string): any {
+        return BaseMetadata.getMetadata(metadataKeyname, target.prototype, methodName);
     }
 
     /**
      * This method wraps the `defineMetadata` method of the "reflect-metadata" library. It also keeps track of the
-     * property seen and adds them to the target.
+     * method seen and adds them to the target.
      *
      * @param target
-     * @param propertyKey
+     * @param methodName
      * @param metadataKeyname
      * @param element
      */
-    static defineMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, element: any) {
-        // Save to the target that we have seen this property.
-        MethodMetadata.methodSeen(target, propertyKey);
+    static defineMetadata(target: any, methodName: string | symbol, metadataKeyname: string, element: any) {
+        // Save to the target that we have seen this method.
+        MethodMetadata.methodSeen(target, methodName);
 
         // Define the element to the metadata using the "reflect-library".
-        BaseMetadata.defineMetadata(metadataKeyname, element, target, propertyKey);
+        BaseMetadata.defineMetadata(metadataKeyname, element, target, methodName);
     }
 
     /**
@@ -88,27 +98,27 @@ export class MethodMetadata {
      * If you pass -1, the element will simply be appended at the end of the array.
      *
      * @param target
-     * @param propertyKey
+     * @param methodName
      * @param metadataKeyname
      * @param element
      * @param index
      */
-    static setToMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, index: number | string, element: any, skipIfDuplicate: boolean = true) {
-        BaseMetadata.setToMetadata(metadataKeyname, index, element, target, skipIfDuplicate, propertyKey)
+    static setToMetadata(target: any, methodName: string | symbol, metadataKeyname: string, index: number | string, element: any, skipIfDuplicate: boolean = true) {
+        BaseMetadata.setToMetadata(metadataKeyname, index, element, target, skipIfDuplicate, methodName)
 
-        // Save to the target that we have seen this property.
-        MethodMetadata.methodSeen(target, propertyKey);
+        // Save to the target that we have seen this method.
+        MethodMetadata.methodSeen(target, methodName);
     }
 
     /**
      * This method assumes that the `metadataKeyname` references metadata that is an array. It will append the element
      * at the end of the array.
      * @param target
-     * @param propertyKey
+     * @param methodName
      * @param metadataKeyname
      * @param element
      */
-    static appendToMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, element: any, skipIfDuplicate: boolean = true) {
-        MethodMetadata.setToMetadata(target, propertyKey, metadataKeyname, -1, element, skipIfDuplicate);
+    static appendToMetadata(target: any, methodName: string | symbol, metadataKeyname: string, element: any, skipIfDuplicate: boolean = true) {
+        MethodMetadata.setToMetadata(target, methodName, metadataKeyname, -1, element, skipIfDuplicate);
     }
 }

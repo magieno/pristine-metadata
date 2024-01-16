@@ -1,4 +1,13 @@
 export abstract class BaseMetadata {
+    /**
+     * This method retrieves the metadata from the class. This means that you must pass the name of the class, not the
+     * object.
+     *
+     * If you have an object, pass `object.constructor` to the target.
+     * @param metadataKeyname
+     * @param target
+     * @param propertyKey
+     */
     static getMetadata(metadataKeyname: string, target: any, propertyKey?: string | symbol): any {
         if(propertyKey) {
             return Reflect.getMetadata(metadataKeyname, target, propertyKey);

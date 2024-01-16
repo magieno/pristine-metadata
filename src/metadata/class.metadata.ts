@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import {ClassInformationInterface} from "../interfaces/class-information.interface";
 import {ClassInformationEnum} from "../enums/class-information.enum";
 import {BaseMetadata} from "./base.metadata";
