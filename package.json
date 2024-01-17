@@ -1,6 +1,6 @@
 {
   "name": "@pristine-ts/metadata",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "",
   "module": "dist/lib/esm/metadata.js",
   "main": "dist/lib/cjs/metadata.js",
@@ -8,7 +8,6 @@
   "scripts": {
     "build": "tsc -p tsconfig.json && tsc -p tsconfig.cjs.json",
     "prepare": "npm run build",
-
     "test": "jest",
     "test:cov": "jest --coverage"
   },

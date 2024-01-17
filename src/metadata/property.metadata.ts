@@ -19,7 +19,7 @@ export class PropertyMetadata {
         };
 
         // Retrieve all the keys from the metadata
-        const keys = Reflect.getMetadataKeys(target.prototype, propertyKey);
+        const keys = PropertyMetadata.getMetadataKeys(target, propertyKey);
 
         for (const key of keys) {
             const propertyMetadata = PropertyMetadata.getMetadata(target, propertyKey, key);
@@ -58,8 +58,33 @@ export class PropertyMetadata {
         ClassMetadata.appendToMetadata(target.constructor, ClassInformationEnum.Properties, propertyKey, true)
     }
 
+    /**
+     * This method returns whether there's a metadata or not for this key.
+     * @param metadataKeyname
+     * @param target
+     * @param propertyKey
+     */
+    static hasMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string): any {
+        return BaseMetadata.hasMetadata(metadataKeyname, target, propertyKey);
+    }
+
+    /**
+     * This method returns all the metadata keys.
+     * @param target
+     * @param propertyKey
+     */
+    static getMetadataKeys(target: any, propertyKey: string | symbol): any {
+        return BaseMetadata.getMetadataKeys(target, propertyKey);
+    }
+
+    /**
+     * This method simply retrieves the metadata associated to a property.
+     * @param target
+     * @param propertyKey
+     * @param metadataKeyname
+     */
     static getMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string): any {
-        return BaseMetadata.getMetadata(metadataKeyname, target.prototype, propertyKey);
+        return BaseMetadata.getMetadata(metadataKeyname, target, propertyKey);
     }
 
     /**

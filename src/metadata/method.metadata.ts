@@ -20,7 +20,7 @@ export class MethodMetadata {
         };
 
         // Retrieve all the keys from the metadata
-        const keys = Reflect.getMetadataKeys(target.prototype, methodName);
+        const keys = MethodMetadata.getMetadataKeys(target, methodName);
 
         for (const key of keys) {
             const methodMetadata = MethodMetadata.getMetadata(target, methodName, key);
@@ -71,7 +71,26 @@ export class MethodMetadata {
      * @param metadataKeyname
      */
     static getMetadata(target: any, methodName: string | symbol, metadataKeyname: string): any {
-        return BaseMetadata.getMetadata(metadataKeyname, target.prototype, methodName);
+        return BaseMetadata.getMetadata(metadataKeyname, target, methodName);
+    }
+
+    /**
+     * This method returns whether there's a metadata or not for this key.
+     * @param metadataKeyname
+     * @param target
+     * @param methodName
+     */
+    static hasMetadata(target: any, methodName: string | symbol, metadataKeyname: string): any {
+        return BaseMetadata.hasMetadata(metadataKeyname, target, methodName);
+    }
+
+    /**
+     * This method returns all the metadata keys.
+     * @param target
+     * @param methodName
+     */
+    static getMetadataKeys(target: any, methodName: string | symbol): any {
+        return BaseMetadata.getMetadataKeys(target, methodName);
     }
 
     /**

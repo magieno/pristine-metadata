@@ -52,56 +52,113 @@ class ClassForTestingPurposes {
 
 describe("Metadata", () =>{
     it("should return the Information fully filled for each property.", () => {
-        let propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes, "title");
+        let propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes.prototype, "title");
         expect(propertyInformation.type).toBe("String");
         expect(propertyInformation.name).toBe("title");
 
-        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes, "createdAt");
+        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes.prototype, "createdAt");
         expect(propertyInformation.type).toBe("Date");
         expect(propertyInformation.name).toBe("createdAt");
 
-        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes, "child");
+        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes.prototype, "child");
         expect(propertyInformation.type).toBe("Child");
         expect(propertyInformation.name).toBe("child");
 
-        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes, "rank");
+        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes.prototype, "rank");
         expect(propertyInformation.type).toBe("Number");
         expect(propertyInformation.name).toBe("rank");
 
-        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes, "array");
+        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes.prototype, "array");
         expect(propertyInformation.type).toBe("Array");
         expect(propertyInformation.name).toBe("array");
         expect(propertyInformation.arrayMemberType).toBe("String");
 
-        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes, "nullableField");
+        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes.prototype, "nullableField");
         expect(propertyInformation.type).toBe("String");
         expect(propertyInformation.name).toBe("nullableField");
         expect(propertyInformation.isNullable).toBeTruthy();
 
-        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes, "children");
+        propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes.prototype, "children");
         expect(propertyInformation.type).toBe("Array");
         expect(propertyInformation.name).toBe("children");
         expect(propertyInformation.arrayMemberType).toBe("Child");
 
-        let methodInformation = MethodMetadata.getInformation(ClassForTestingPurposes, "getTitle");
+        let methodInformation = MethodMetadata.getInformation(ClassForTestingPurposes.prototype, "getTitle");
         expect(methodInformation.returnType).toBe("String")
         expect(methodInformation.parameterTypes).toBeDefined()
         expect(methodInformation.parameterTypes!.length).toBe(1)
         expect(methodInformation.parameterTypes![0]).toBe("Boolean")
 
-        methodInformation = MethodMetadata.getInformation(ClassForTestingPurposes, "childAccessor");
+        methodInformation = MethodMetadata.getInformation(ClassForTestingPurposes.prototype, "childAccessor");
         // Since this is a getter, there is no return type but only the type of the "property" since it should technically be treated as one
         expect(methodInformation.type).toBe("Child")
         expect(methodInformation.parameterTypes).toBeDefined()
         expect(methodInformation.parameterTypes!.length).toBe(0)
 
-        methodInformation = MethodMetadata.getInformation(ClassForTestingPurposes, "rankAccessor");
+        methodInformation = MethodMetadata.getInformation(ClassForTestingPurposes.prototype, "rankAccessor");
         // Since this is a getter, there is no return type but only the type of the "property" since it should technically be treated as one
         expect(methodInformation.type).toBe("Number")
         expect(methodInformation.parameterTypes).toBeDefined()
         expect(methodInformation.parameterTypes!.length).toBe(1)
 
         const classInformation = ClassMetadata.getInformation(ClassForTestingPurposes);
+        expect(classInformation.properties.length).toBe(7);
+        expect(classInformation.methods.length).toBe(3)
+    })
+
+    it("should return the Information fully filled for each property.", () => {
+        const classForTestingPurposes = new ClassForTestingPurposes();
+
+        let propertyInformation = PropertyMetadata.getInformation(classForTestingPurposes, "title");
+        expect(propertyInformation.type).toBe("String");
+        expect(propertyInformation.name).toBe("title");
+
+        propertyInformation = PropertyMetadata.getInformation(classForTestingPurposes, "createdAt");
+        expect(propertyInformation.type).toBe("Date");
+        expect(propertyInformation.name).toBe("createdAt");
+
+        propertyInformation = PropertyMetadata.getInformation(classForTestingPurposes, "child");
+        expect(propertyInformation.type).toBe("Child");
+        expect(propertyInformation.name).toBe("child");
+
+        propertyInformation = PropertyMetadata.getInformation(classForTestingPurposes, "rank");
+        expect(propertyInformation.type).toBe("Number");
+        expect(propertyInformation.name).toBe("rank");
+
+        propertyInformation = PropertyMetadata.getInformation(classForTestingPurposes, "array");
+        expect(propertyInformation.type).toBe("Array");
+        expect(propertyInformation.name).toBe("array");
+        expect(propertyInformation.arrayMemberType).toBe("String");
+
+        propertyInformation = PropertyMetadata.getInformation(classForTestingPurposes, "nullableField");
+        expect(propertyInformation.type).toBe("String");
+        expect(propertyInformation.name).toBe("nullableField");
+        expect(propertyInformation.isNullable).toBeTruthy();
+
+        propertyInformation = PropertyMetadata.getInformation(classForTestingPurposes, "children");
+        expect(propertyInformation.type).toBe("Array");
+        expect(propertyInformation.name).toBe("children");
+        expect(propertyInformation.arrayMemberType).toBe("Child");
+
+        let methodInformation = MethodMetadata.getInformation(classForTestingPurposes, "getTitle");
+        expect(methodInformation.returnType).toBe("String")
+        expect(methodInformation.parameterTypes).toBeDefined()
+        expect(methodInformation.parameterTypes!.length).toBe(1)
+        expect(methodInformation.parameterTypes![0]).toBe("Boolean")
+
+        methodInformation = MethodMetadata.getInformation(classForTestingPurposes, "childAccessor");
+        // Since this is a getter, there is no return type but only the type of the "property" since it should technically be treated as one
+        expect(methodInformation.type).toBe("Child")
+        expect(methodInformation.parameterTypes).toBeDefined()
+        expect(methodInformation.parameterTypes!.length).toBe(0)
+
+        methodInformation = MethodMetadata.getInformation(classForTestingPurposes, "rankAccessor");
+        // Since this is a getter, there is no return type but only the type of the "property" since it should technically be treated as one
+        expect(methodInformation.type).toBe("Number")
+        expect(methodInformation.parameterTypes).toBeDefined()
+        expect(methodInformation.parameterTypes!.length).toBe(1)
+
+        const classInformation = ClassMetadata.getInformation(classForTestingPurposes.constructor);
         expect(classInformation.properties.length).toBe(7);
         expect(classInformation.methods.length).toBe(3)
     })

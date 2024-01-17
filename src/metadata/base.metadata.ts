@@ -17,6 +17,33 @@ export abstract class BaseMetadata {
     }
 
     /**
+     * This method returns whether there's a metadata or not for this key.
+     * @param metadataKeyname
+     * @param target
+     * @param propertyKey
+     */
+    static hasMetadata(metadataKeyname: string, target: any, propertyKey?: string | symbol): boolean {
+        if(propertyKey) {
+            return Reflect.hasMetadata(metadataKeyname, target, propertyKey);
+        } else {
+            return Reflect.hasMetadata(metadataKeyname, target);
+        }
+    }
+
+    /**
+     * This method returns all the metadata keys.
+     * @param target
+     * @param propertyKey
+     */
+    static getMetadataKeys(target: any, propertyKey?: string | symbol): string[] {
+        if(propertyKey) {
+            return Reflect.getMetadataKeys( target, propertyKey);
+        } else {
+            return Reflect.getMetadataKeys(target);
+        }
+    }
+
+    /**
      * This method wraps the `defineMetadata` method of the "reflect-metadata" library. It also keeps track of the
      * property seen and adds them to the target.
      *

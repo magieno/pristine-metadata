@@ -18,7 +18,7 @@ export class ClassMetadata {
         };
 
         // Retrieve all the keys from the metadata
-        const keys = Reflect.getMetadataKeys(target);
+        const keys = ClassMetadata.getMetadataKeys(target);
 
         for (const key of keys) {
             const classMetadata = ClassMetadata.getMetadata(target, key);
@@ -43,8 +43,30 @@ export class ClassMetadata {
         return classInformation;
     }
 
+    /**
+     * This method simply retrieves the metadata associated to a class.
+     * @param target
+     * @param metadataKeyname
+     */
     static getMetadata(target: any, metadataKeyname: string): any {
         return BaseMetadata.getMetadata(metadataKeyname, target);
+    }
+
+    /**
+     * This method returns whether there's a metadata or not for this key.
+     * @param metadataKeyname
+     * @param target
+     */
+    static hasMetadata(target: any, metadataKeyname: string): any {
+        return BaseMetadata.hasMetadata(metadataKeyname, target);
+    }
+
+    /**
+     * This method returns all the metadata keys.
+     * @param target
+     */
+    static getMetadataKeys(target: any): any {
+        return BaseMetadata.getMetadataKeys(target);
     }
 
     /**
