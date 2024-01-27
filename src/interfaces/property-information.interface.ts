@@ -1,3 +1,5 @@
+import {TypeEnum} from "../enums/type.enum";
+
 export interface PropertyInformationInterface {
     /**
      * The name of the property
@@ -14,6 +16,11 @@ export interface PropertyInformationInterface {
      */
     typeObject?: any;
 
+    /**
+     * The enum representing the type of the property.
+     */
+    typeEnum?: TypeEnum;
+
     decorators?: string[];
 
     /**
@@ -26,6 +33,11 @@ export interface PropertyInformationInterface {
      * The type of the element in the array.
      */
     arrayMemberType?: string;
+
+    /**
+     * The type enum of the element in the array.
+     */
+    arrayMemberTypeEnum?: TypeEnum;
 
     /**
      * The object representing the type of the element in the array.

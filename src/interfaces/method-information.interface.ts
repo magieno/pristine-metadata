@@ -1,3 +1,5 @@
+import {TypeEnum} from "../enums/type.enum";
+
 /**
  * This interface represents the information that we have for a specific method.
  */
@@ -18,9 +20,19 @@ export interface MethodInformationInterface {
     typeObject?: any;
 
     /**
+     * The object representing the type.
+     */
+    typeEnum?: TypeEnum;
+
+    /**
      * The return type of the method.
      */
     returnType?: string;
+
+    /**
+     * The return type of the method.
+     */
+    returnTypeEnum?: TypeEnum;
 
     /**
      * The type object representing the return type of the method.
@@ -31,6 +43,11 @@ export interface MethodInformationInterface {
      * The list of parameter types for this method (in order).
      */
     parameterTypes: string[];
+
+    /**
+     * The list of parameter types for this method (in order).
+     */
+    parameterTypeEnums: TypeEnum[];
 
     /**
      * The list of parameter type objects for this method (in order).
