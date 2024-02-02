@@ -8,4 +8,5 @@ export enum TypeEnum {
     Set = "set",
     Function = "function",
     Symbol = "symbol",
+    Null = "null"
 }

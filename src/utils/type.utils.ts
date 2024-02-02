@@ -19,6 +19,14 @@ export class TypeUtils {
     }
 
     static getTypeOfValue(value: any): TypeEnum | undefined {
+        if(value === undefined) {
+            return undefined;
+        }
+
+        if(value === null) {
+            return TypeEnum.Null;
+        }
+
         if(this.isDate(value)) {
             return TypeEnum.Date;
         }
