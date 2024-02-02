@@ -72,9 +72,13 @@ export class PropertyMetadata {
     }
 
     static propertySeen(target: any, propertyKey: string | symbol) {
-        // We don't pass target.prototype here since when we set metadata on the class, we want to set it on the target
-        // Therefore, ClassMetadata expects the target and not the prototype.
         ClassMetadata.appendToMetadata(target, ClassInformationEnum.Properties, propertyKey, true)
+
+        // Add this to ensure that the property is properly registered with the class
+        if(target && target.constructor) {
+            // Save to the target that we have seen this property.
+            ClassMetadata.appendToMetadata(target.constructor, ClassInformationEnum.Properties, propertyKey, true)
+        }
     }
 
     /**
@@ -118,12 +122,6 @@ export class PropertyMetadata {
     static defineMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, element: any) {
         // Save to the target that we have seen this property.
         PropertyMetadata.propertySeen(target, propertyKey);
-
-        // Add this to ensure that the property is properly registered with the class
-        if(target && target.constructor) {
-            // Save to the target that we have seen this property.
-            PropertyMetadata.propertySeen(target.constructor, propertyKey);
-        }
 
         // Define the element to the metadata using the "reflect-library".
         BaseMetadata.defineMetadata(metadataKeyname, element, target, propertyKey);

@@ -83,6 +83,12 @@ export class MethodMetadata {
      */
     static methodSeen(target: any, methodName: string | symbol) {
         ClassMetadata.appendToMetadata(target, ClassInformationEnum.Methods, methodName, true)
+
+        // Add this to ensure that the method is properly registered with the class
+        if(target && target.constructor) {
+            // Save to the target that we have seen this property.
+            ClassMetadata.appendToMetadata(target.constructor, ClassInformationEnum.Methods, methodName, true)
+        }
     }
 
     /**
@@ -126,13 +132,6 @@ export class MethodMetadata {
     static defineMetadata(target: any, methodName: string | symbol, metadataKeyname: string, element: any) {
         // Save to the target that we have seen this method.
         MethodMetadata.methodSeen(target, methodName);
-
-        // Add this to ensure that the method is properly registered with the class
-        if(target && target.constructor) {
-            // Save to the target that we have seen this property.
-            MethodMetadata.methodSeen(target.constructor, methodName);
-        }
-
 
         // Define the element to the metadata using the "reflect-library".
         BaseMetadata.defineMetadata(metadataKeyname, element, target, methodName);
