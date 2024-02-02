@@ -55,6 +55,22 @@ export class MethodMetadata {
     }
 
     /**
+     * This method clones the metadata from a `sourceTarget` and `sourceMethodKey (optional)` and moves it to
+     * `destinationTarget` and `destinationMethodKey`.
+     *
+     * If you pass the `sourceMethodKey` but not the `destinationMethodKey`, the `sourceMethodKey` will be used
+     * instead.
+     *
+     * @param sourceTarget
+     * @param destinationTarget
+     * @param sourceMethodKey
+     * @param destinationMethodKey
+     */
+    static cloneMetadata(sourceTarget: any, destinationTarget: any, sourceMethodKey: string | symbol, destinationMethodKey?: string | symbol ) {
+        BaseMetadata.cloneMetadata(sourceTarget, destinationTarget, sourceMethodKey, destinationMethodKey)
+    }
+
+    /**
      * This method is used to add to the target's metadata that a method has been discovered in a
      * decorator. Methods are not "saved" in the metadata and this library does it.
      * @param target

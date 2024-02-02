@@ -205,4 +205,18 @@ describe("Base Metadata", () => {
         expect(metadata["a"]).toBe("elementa")
         expect(metadata["b"]).toBe("elementb")
     })
+
+    it("should clone the metadata from one object to the other", () => {
+        @Reflect.metadata("key", "value")
+        class MetadataClass {
+            @Reflect.metadata("key_title", "value_title")
+            title: string;
+        }
+
+        const destination = Object.create({});
+
+        expect(BaseMetadata.hasMetadata("key", destination.constructor.prototype)).toBeFalsy()
+        BaseMetadata.cloneMetadata(MetadataClass, destination.constructor.prototype);
+        expect(BaseMetadata.hasMetadata("key", destination.constructor.prototype)).toBeTruthy()
+    })
 })

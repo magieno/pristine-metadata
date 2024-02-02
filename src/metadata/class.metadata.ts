@@ -44,6 +44,16 @@ export class ClassMetadata {
     }
 
     /**
+     * This method clones the metadata from a `sourceTarget`  and moves it to `destinationTarget`.
+     *
+     * @param sourceTarget
+     * @param destinationTarget
+     */
+    static cloneMetadata(sourceTarget: any, destinationTarget: any) {
+        BaseMetadata.cloneMetadata(sourceTarget, destinationTarget);
+    }
+
+    /**
      * This method simply retrieves the metadata associated to a class.
      * @param target
      * @param metadataKeyname

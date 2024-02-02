@@ -1,5 +1,34 @@
 export abstract class BaseMetadata {
     /**
+     * This method clones the metadata from a `sourceTarget` and `sourcePropertyKey (optional)` and moves it to
+     * `destinationTarget` and `destinationPropertyKey`.
+     *
+     * If you pass the `sourcePropertyKey` but not the `destinationPropertyKey`, the `sourcePropertyKey` will be used
+     * instead.
+     *
+     * @param sourceTarget
+     * @param destinationTarget
+     * @param sourcePropertyKey
+     * @param destinationPropertyKey
+     */
+    static cloneMetadata(sourceTarget: any, destinationTarget: any, sourcePropertyKey?: string | symbol, destinationPropertyKey?: string | symbol ) {
+        if(sourcePropertyKey) {
+            const keys = BaseMetadata.getMetadataKeys(sourceTarget, sourcePropertyKey);
+
+            keys.forEach( (key:string) => {
+                BaseMetadata.defineMetadata(key, BaseMetadata.getMetadata(sourceTarget, key), destinationTarget, destinationPropertyKey ?? sourcePropertyKey);
+            });
+        } else {
+            const keys = BaseMetadata.getMetadataKeys(sourceTarget);
+
+            keys.forEach( (key:string) => {
+                const metadata = BaseMetadata.getMetadata(key, sourceTarget);
+                BaseMetadata.defineMetadata(key, metadata, destinationTarget);
+            });
+        }
+    }
+
+    /**
      * This method retrieves the metadata from the class. This means that you must pass the name of the class, not the
      * object.
      *
