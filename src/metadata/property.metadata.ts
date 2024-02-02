@@ -4,6 +4,7 @@ import {PropertyInformationEnum} from "../enums/property-information.enum";
 import {ClassMetadata} from "./class.metadata";
 import {ClassInformationEnum} from "../enums/class-information.enum";
 import {BaseMetadata} from "./base.metadata";
+import {TypeUtils} from "../utils/type.utils";
 
 export class PropertyMetadata {
     /**
@@ -32,6 +33,7 @@ export class PropertyMetadata {
                 case PropertyInformationEnum.Type:
                     propertyInformation.typeObject = propertyMetadata;
                     propertyInformation.type = propertyMetadata.name;
+                    propertyInformation.typeEnum = TypeUtils.getTypeFromMetadataStringRepresentation(propertyMetadata.name);
                     break;
                 case PropertyInformationEnum.Decorators:
                     propertyInformation.decorators = propertyMetadata;
@@ -42,6 +44,7 @@ export class PropertyMetadata {
                 case PropertyInformationEnum.ArrayMemberType:
                     propertyInformation.arrayMemberObject = propertyMetadata;
                     propertyInformation.arrayMemberType = propertyMetadata.name;
+                    propertyInformation.arrayMemberTypeEnum = TypeUtils.getTypeFromMetadataStringRepresentation(propertyMetadata.name);
                     break;
                 default:
                     (propertyInformation.metadata as any)[key] = propertyMetadata;

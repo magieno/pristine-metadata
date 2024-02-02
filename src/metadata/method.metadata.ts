@@ -3,6 +3,7 @@ import {ClassInformationEnum} from "../enums/class-information.enum";
 import {MethodInformationInterface} from "../interfaces/method-information.interface";
 import {MethodInformationEnum} from "../enums/method-information.enum";
 import {BaseMetadata} from "./base.metadata";
+import {TypeUtils} from "../utils/type.utils";
 
 export class MethodMetadata {
     /**
@@ -17,6 +18,7 @@ export class MethodMetadata {
             metadata: {},
             parameterTypes: [],
             parameterTypeObjects:[],
+            parameterTypeEnums: [],
         };
 
         // Retrieve all the keys from the metadata
@@ -33,17 +35,20 @@ export class MethodMetadata {
                 case MethodInformationEnum.ReturnType:
                     methodInformation.returnTypeObject = methodMetadata;
                     methodInformation.returnType = methodMetadata.name;
+                    methodInformation.returnTypeEnum = TypeUtils.getTypeFromMetadataStringRepresentation(methodMetadata.name);
                     break;
                 case MethodInformationEnum.Decorators:
                     methodInformation.decorators = methodMetadata;
                     break;
                 case MethodInformationEnum.ParameterTypes:
                     methodInformation.parameterTypes = methodMetadata.map((element: any) => element.name);
+                    methodInformation.parameterTypeEnums = methodMetadata.map((element: any) => TypeUtils.getTypeFromMetadataStringRepresentation(element.name));
                     methodInformation.parameterTypeObjects = methodMetadata;
                     break;
                 case MethodInformationEnum.Type:
                     methodInformation.typeObject = methodMetadata;
                     methodInformation.type = methodMetadata.name;
+                    methodInformation.typeEnum = TypeUtils.getTypeFromMetadataStringRepresentation(methodMetadata.name);
                     break;
                 default:
                     (methodInformation.metadata as any)[key] = methodMetadata;
