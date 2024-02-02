@@ -119,6 +119,12 @@ export class PropertyMetadata {
         // Save to the target that we have seen this property.
         PropertyMetadata.propertySeen(target, propertyKey);
 
+        // Add this to ensure that the property is properly registered with the class
+        if(target && target.constructor) {
+            // Save to the target that we have seen this property.
+            PropertyMetadata.propertySeen(target.constructor, propertyKey);
+        }
+
         // Define the element to the metadata using the "reflect-library".
         BaseMetadata.defineMetadata(metadataKeyname, element, target, propertyKey);
     }

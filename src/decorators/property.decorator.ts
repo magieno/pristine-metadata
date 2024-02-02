@@ -14,6 +14,6 @@ export const property = (options?:{nullable: boolean}) => {
             PropertyMetadata.defineMetadata(target, propertyKey, PropertyInformationEnum.Nullable, options.nullable)
         }
 
-        PropertyMetadata.propertySeen(target, propertyKey);
+        PropertyMetadata.propertySeen(target.constructor, propertyKey);
     };
 }
