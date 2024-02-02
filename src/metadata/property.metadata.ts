@@ -55,10 +55,26 @@ export class PropertyMetadata {
         return propertyInformation;
     }
 
+    /**
+     * This method clones the metadata from a `sourceTarget` and `sourcePropertyKey (optional)` and moves it to
+     * `destinationTarget` and `destinationPropertyKey`.
+     *
+     * If you pass the `sourcePropertyKey` but not the `destinationPropertyKey`, the `sourcePropertyKey` will be used
+     * instead.
+     *
+     * @param sourceTarget
+     * @param destinationTarget
+     * @param sourcePropertyKey
+     * @param destinationPropertyKey
+     */
+    static cloneMetadata(sourceTarget: any, destinationTarget: any, sourcePropertyKey: string | symbol, destinationPropertyKey?: string | symbol ) {
+        BaseMetadata.cloneMetadata(sourceTarget, destinationTarget, sourcePropertyKey, destinationPropertyKey)
+    }
+
     static propertySeen(target: any, propertyKey: string | symbol) {
         // We don't pass target.prototype here since when we set metadata on the class, we want to set it on the target
         // Therefore, ClassMetadata expects the target and not the prototype.
-        ClassMetadata.appendToMetadata(target.constructor, ClassInformationEnum.Properties, propertyKey, true)
+        ClassMetadata.appendToMetadata(target, ClassInformationEnum.Properties, propertyKey, true)
     }
 
     /**
@@ -102,6 +118,12 @@ export class PropertyMetadata {
     static defineMetadata(target: any, propertyKey: string | symbol, metadataKeyname: string, element: any) {
         // Save to the target that we have seen this property.
         PropertyMetadata.propertySeen(target, propertyKey);
+
+        // Add this to ensure that the property is properly registered with the class
+        if(target && target.constructor) {
+            // Save to the target that we have seen this property.
+            PropertyMetadata.propertySeen(target.constructor, propertyKey);
+        }
 
         // Define the element to the metadata using the "reflect-library".
         BaseMetadata.defineMetadata(metadataKeyname, element, target, propertyKey);
