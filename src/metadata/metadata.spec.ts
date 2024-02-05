@@ -4,7 +4,6 @@ import {classMetadata} from "../decorators/classMetadata.decorator";
 import {method} from "../decorators/method.decorator";
 import {ClassMetadata} from "./class.metadata";
 import {MethodMetadata} from "./method.metadata";
-import {array} from "../decorators/array.decorator";
 import {TypeEnum} from "../enums/type.enum";
 
 @classMetadata()
@@ -26,13 +25,13 @@ class ClassForTestingPurposes {
     @property({nullable: true})
     nullableField?: string;
 
-    @array(String)
+    @property()
     array: string[];
 
     @property()
     child: Child;
 
-    @array(Child)
+    @property()
     children: Child[];
 
     @method()
@@ -77,7 +76,6 @@ describe("Metadata", () =>{
         expect(propertyInformation.type).toBe("Array");
         expect(propertyInformation.typeEnum).toBe(TypeEnum.Array);
         expect(propertyInformation.name).toBe("array");
-        expect(propertyInformation.arrayMemberType).toBe("String");
 
         propertyInformation = PropertyMetadata.getInformation(ClassForTestingPurposes.prototype, "nullableField");
         expect(propertyInformation.type).toBe("String");
@@ -89,7 +87,6 @@ describe("Metadata", () =>{
         expect(propertyInformation.type).toBe("Array");
         expect(propertyInformation.typeEnum).toBe(TypeEnum.Array);
         expect(propertyInformation.name).toBe("children");
-        expect(propertyInformation.arrayMemberType).toBe("Child");
 
         let methodInformation = MethodMetadata.getInformation(ClassForTestingPurposes.prototype, "getTitle");
         expect(methodInformation.returnType).toBe("String")
@@ -150,7 +147,6 @@ describe("Metadata", () =>{
         expect(propertyInformation.type).toBe("Array");
         expect(propertyInformation.typeEnum).toBe(TypeEnum.Array);
         expect(propertyInformation.name).toBe("array");
-        expect(propertyInformation.arrayMemberType).toBe("String");
 
         propertyInformation = PropertyMetadata.getInformation(classForTestingPurposes, "nullableField");
         expect(propertyInformation.type).toBe("String");
@@ -162,7 +158,6 @@ describe("Metadata", () =>{
         expect(propertyInformation.type).toBe("Array");
         expect(propertyInformation.typeEnum).toBe(TypeEnum.Array);
         expect(propertyInformation.name).toBe("children");
-        expect(propertyInformation.arrayMemberType).toBe("Child");
 
         let methodInformation = MethodMetadata.getInformation(classForTestingPurposes, "getTitle");
         expect(methodInformation.returnType).toBe("String")
