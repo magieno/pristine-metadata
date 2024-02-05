@@ -1,7 +1,11 @@
 import {TypeEnum} from "../enums/type.enum";
 
 export class TypeUtils {
-    static getTypeFromMetadataStringRepresentation(type: string): TypeEnum{
+    static getTypeFromMetadataStringRepresentation(type: string): TypeEnum | undefined{
+        if(type === undefined || type === "undefined") {
+            return undefined;
+        }
+
         const lowercaseType = type.toLowerCase();
         const keys = Object.keys(TypeEnum);
         const value = keys.map( (key: string) => {
@@ -19,7 +23,7 @@ export class TypeUtils {
     }
 
     static getTypeOfValue(value: any): TypeEnum | undefined {
-        if(value === undefined) {
+        if(value === undefined || typeof value === undefined || typeof value === "undefined") {
             return undefined;
         }
 
