@@ -43,6 +43,14 @@ export class TypeUtils {
             return TypeEnum.Set;
         }
 
+        if(typeof value === 'function' && !value.prototype){
+            return TypeEnum.Function;
+        }
+
+        if(typeof value === 'function' && value.prototype && value.prototype.constructor && value.prototype.constructor.name){
+            return this.getTypeFromMetadataStringRepresentation(value.prototype.constructor.name);
+        }
+
         return this.getTypeFromMetadataStringRepresentation(typeof value);
     }
 

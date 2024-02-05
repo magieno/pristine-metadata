@@ -10,6 +10,12 @@ import {PropertyInformationEnum} from "../enums/property-information.enum";
 
 describe("Type Utils", () => {
     describe("Type of Value", () => {
+
+        it("should return the type for a string", () => {
+            expect(TypeUtils.getTypeOfValue(String)).toBe(TypeEnum.String);
+            expect(TypeUtils.getTypeOfValue("")).toBe(TypeEnum.String);
+        })
+
         it("should return the type for an array", () => {
             expect(TypeUtils.getTypeOfValue([])).toBe(TypeEnum.Array);
         })
@@ -22,6 +28,11 @@ describe("Type Utils", () => {
             class Test {}
 
             expect(TypeUtils.getTypeOfValue(new Test())).toBe(TypeEnum.Object);
+        })
+        it("should return the type for a class type", () => {
+            class Test {}
+
+            expect(TypeUtils.getTypeOfValue(Test)).toBe(TypeEnum.Object);
         })
 
         it("should return the type for a function", () => {
