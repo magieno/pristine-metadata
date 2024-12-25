@@ -70,9 +70,10 @@ export class MethodMetadata {
      * @param destinationTarget
      * @param sourceMethodKey
      * @param destinationMethodKey
+     * @param metadataKeysToIgnore
      */
-    static cloneMetadata(sourceTarget: any, destinationTarget: any, sourceMethodKey: string | symbol, destinationMethodKey?: string | symbol ) {
-        BaseMetadata.cloneMetadata(sourceTarget, destinationTarget, sourceMethodKey, destinationMethodKey)
+    static cloneMetadata(sourceTarget: any, destinationTarget: any, sourceMethodKey: string | symbol, destinationMethodKey?: string | symbol, metadataKeysToIgnore: string[] = [] ) {
+        BaseMetadata.cloneMetadata(sourceTarget, destinationTarget, sourceMethodKey, destinationMethodKey, metadataKeysToIgnore)
     }
 
     /**

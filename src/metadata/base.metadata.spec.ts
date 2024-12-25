@@ -219,4 +219,8 @@ describe("Base Metadata", () => {
         BaseMetadata.cloneMetadata(MetadataClass, destination.constructor.prototype);
         expect(BaseMetadata.hasMetadata("key", destination.constructor.prototype)).toBeTruthy()
     })
+
+    it("should ignore the metadata keys that are passed when cloning", () => {
+        expect(false).toBeTruthy()
+    })
 })
