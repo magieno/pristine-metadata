@@ -1,5 +1,5 @@
 import {MethodMetadata} from "../metadata/method.metadata";
-import {importMethodMetadata} from "./import-method-metadata.decorator";
+import {cloneMethodMetadata} from "./clone-method-metadata.decorator";
 
 const methodDecoratorTest = () => {
     return (target: any, propertyKey: string | symbol) => {
@@ -14,8 +14,8 @@ const methodDecoratorTest2 = () => {
 }
 
 
-describe('Import Method Metadata', () => {
-    it("should import metadata for a method", () => {
+describe('Clone Method Metadata', () => {
+    it("should clone metadata for a method", () => {
         class ClassWithDecorators {
             @methodDecoratorTest()
             @methodDecoratorTest2()
@@ -25,7 +25,7 @@ describe('Import Method Metadata', () => {
         }
 
         class ClassThatImportsDecrators {
-            @importMethodMetadata<ClassWithDecorators>(ClassWithDecorators, "getTitle")
+            @cloneMethodMetadata<ClassWithDecorators>(ClassWithDecorators, "getTitle")
             getDescription(): string {
                 return "description";
             }

@@ -1,5 +1,5 @@
 import {PropertyMetadata} from "../metadata/property.metadata";
-import {importPropertyMetadata} from "./import-property-metadata.decorator";
+import {clonePropertyMetadata} from "./clone-property-metadata.decorator";
 
 const propertyDecoratorTest = () => {
     return (target: any, propertyKey: string | symbol) => {
@@ -14,8 +14,8 @@ const propertyDecoratorTest2 = () => {
 }
 
 
-describe('Import Property Metadata', () => {
-    it("should import metadata for a property", () => {
+describe('CloneProperty Metadata', () => {
+    it("should clone metadata for a property", () => {
         class ClassWithDecorators {
             @propertyDecoratorTest()
             @propertyDecoratorTest2()
@@ -23,7 +23,7 @@ describe('Import Property Metadata', () => {
         }
 
         class ClassThatImportsDecrators {
-            @importPropertyMetadata<ClassWithDecorators>(ClassWithDecorators, "title")
+            @clonePropertyMetadata<ClassWithDecorators>(ClassWithDecorators, "title")
             description?: string;
         }
 

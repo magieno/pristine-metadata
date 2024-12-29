@@ -1,5 +1,5 @@
 import {ClassMetadata} from "../metadata/class.metadata";
-import {importClassMetadata} from "./import-class-metadata.decorator";
+import {cloneClassMetadata} from "./clone-class-metadata.decorator";
 
 const classDecorator = () => {
     return (
@@ -12,13 +12,13 @@ const classDecorator = () => {
     }
 }
 
-describe('Import Class Metadata', () => {
-    it("should import metadata for a class", () => {
+describe('Clone Class Metadata', () => {
+    it("should clone metadata for a class", () => {
         @classDecorator()
         class ClassWithDecorators {
         }
 
-        @importClassMetadata(ClassWithDecorators)
+        @cloneClassMetadata(ClassWithDecorators)
         class ClassThatImportsDecrators {
         }
 
