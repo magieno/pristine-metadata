@@ -48,9 +48,10 @@ export class ClassMetadata {
      *
      * @param sourceTarget
      * @param destinationTarget
+     * @param metadataKeysToIgnore
      */
-    static cloneMetadata(sourceTarget: any, destinationTarget: any) {
-        BaseMetadata.cloneMetadata(sourceTarget, destinationTarget);
+    static cloneMetadata(sourceTarget: any, destinationTarget: any, metadataKeysToIgnore: string[] = [] ) {
+        BaseMetadata.cloneMetadata(sourceTarget, destinationTarget, undefined, undefined, metadataKeysToIgnore);
     }
 
     /**

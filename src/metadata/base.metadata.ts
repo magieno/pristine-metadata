@@ -10,18 +10,25 @@ export abstract class BaseMetadata {
      * @param destinationTarget
      * @param sourcePropertyKey
      * @param destinationPropertyKey
+     * @param metadataKeysToIgnore
      */
-    static cloneMetadata(sourceTarget: any, destinationTarget: any, sourcePropertyKey?: string | symbol, destinationPropertyKey?: string | symbol ) {
+    static cloneMetadata(sourceTarget: any, destinationTarget: any, sourcePropertyKey?: string | symbol, destinationPropertyKey?: string | symbol, metadataKeysToIgnore: string[] = [] ) {
         if(sourcePropertyKey) {
             const keys = BaseMetadata.getMetadataKeys(sourceTarget, sourcePropertyKey);
 
-            keys.forEach( (key:string) => {
-                BaseMetadata.defineMetadata(key, BaseMetadata.getMetadata(sourceTarget, key), destinationTarget, destinationPropertyKey ?? sourcePropertyKey);
+            keys.filter(key => !metadataKeysToIgnore.includes(key)).forEach( (key:string) => {
+                const metadata = BaseMetadata.getMetadata(key, sourceTarget, sourcePropertyKey);
+
+                if(metadata === undefined) {
+                    return;
+                }
+
+                BaseMetadata.defineMetadata(key, metadata, destinationTarget, destinationPropertyKey ?? sourcePropertyKey);
             });
         } else {
             const keys = BaseMetadata.getMetadataKeys(sourceTarget);
 
-            keys.forEach( (key:string) => {
+            keys.filter(key => !metadataKeysToIgnore.includes(key)).forEach( (key:string) => {
                 const metadata = BaseMetadata.getMetadata(key, sourceTarget);
                 BaseMetadata.defineMetadata(key, metadata, destinationTarget);
             });

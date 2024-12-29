@@ -219,4 +219,26 @@ describe("Base Metadata", () => {
         BaseMetadata.cloneMetadata(MetadataClass, destination.constructor.prototype);
         expect(BaseMetadata.hasMetadata("key", destination.constructor.prototype)).toBeTruthy()
     })
+
+    it("should ignore the metadata keys that are passed when cloning", () => {
+        @Reflect.metadata("key", "value")
+        class MetadataClass {
+            @Reflect.metadata("key_title", "value_title")
+            @Reflect.metadata("key_title2", "value_title2")
+            @Reflect.metadata("key_title3", "value_title3")
+            title: string;
+        }
+
+        class Destination {
+            title: string;
+        }
+
+        const destination = new Destination();
+
+        BaseMetadata.cloneMetadata(MetadataClass.prototype, destination, "title", "title", ["key_title2", "key_title3"]);
+        expect(BaseMetadata.hasMetadata("key_title", destination, "title")).toBeTruthy()
+        expect(BaseMetadata.getMetadata("key_title", destination, "title")).toBe("value_title")
+        expect(BaseMetadata.hasMetadata("key_title2", destination, "title")).toBeFalsy()
+        expect(BaseMetadata.hasMetadata("key_title3", destination, "title")).toBeFalsy()
+    })
 })

@@ -66,9 +66,10 @@ export class PropertyMetadata {
      * @param destinationTarget
      * @param sourcePropertyKey
      * @param destinationPropertyKey
+     * @param metadataKeysToIgnore
      */
-    static cloneMetadata(sourceTarget: any, destinationTarget: any, sourcePropertyKey: string | symbol, destinationPropertyKey?: string | symbol ) {
-        BaseMetadata.cloneMetadata(sourceTarget, destinationTarget, sourcePropertyKey, destinationPropertyKey)
+    static cloneMetadata(sourceTarget: any, destinationTarget: any, sourcePropertyKey: string | symbol, destinationPropertyKey?: string | symbol, metadataKeysToIgnore: string[] = []) {
+        BaseMetadata.cloneMetadata(sourceTarget, destinationTarget, sourcePropertyKey, destinationPropertyKey, metadataKeysToIgnore)
     }
 
     static propertySeen(target: any, propertyKey: string | symbol) {
