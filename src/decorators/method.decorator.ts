@@ -8,7 +8,7 @@ import {MethodMetadata} from "../metadata/method.metadata";
  * object is empty.
  */
 export const method = () => {
-    return (target: any, propertyKey: string | symbol) => {
-        MethodMetadata.methodSeen(target.constructor, propertyKey);
+    return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+        MethodMetadata.methodSeen(target.constructor, propertyKey, descriptor);
     };
 }

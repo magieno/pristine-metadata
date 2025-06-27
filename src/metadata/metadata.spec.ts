@@ -48,6 +48,11 @@ class ClassForTestingPurposes {
     set rankAccessor(rank: number) {
         this.rank = rank;
     }
+
+    @method()
+    static introduceYourself(name: string, age: number): string {
+        return `My name is ${name} and I am ${age} years old.`;
+    }
 }
 
 describe("Metadata", () =>{
@@ -97,6 +102,9 @@ describe("Metadata", () =>{
         expect(methodInformation.parameterTypeEnums).toBeDefined()
         expect(methodInformation.parameterTypeEnums!.length).toBe(1)
         expect(methodInformation.parameterTypeEnums![0]).toBe(TypeEnum.Boolean)
+        expect(methodInformation.parameterNames).toBeDefined()
+        expect(methodInformation.parameterNames.length).toBe(1)
+        expect(methodInformation.parameterNames[0]).toBe("capitalize")
 
         methodInformation = MethodMetadata.getInformation(ClassForTestingPurposes.prototype, "childAccessor");
         // Since this is a getter, there is no return type but only the type of the "property" since it should technically be treated as one
@@ -115,9 +123,29 @@ describe("Metadata", () =>{
         expect(methodInformation.parameterTypeEnums).toBeDefined()
         expect(methodInformation.parameterTypeEnums!.length).toBe(1)
 
+        methodInformation = MethodMetadata.getInformation(ClassForTestingPurposes, "introduceYourself");
+        expect(methodInformation.returnType).toBe("String")
+        expect(methodInformation.returnTypeEnum).toBe(TypeEnum.String)
+        expect(methodInformation.parameterTypes).toBeDefined()
+        expect(methodInformation.parameterTypes!.length).toBe(2)
+        expect(methodInformation.parameterTypes![0]).toBe("String")
+        expect(methodInformation.parameterTypes![1]).toBe("Number")
+
+        expect(methodInformation.parameterTypeEnums).toBeDefined()
+        expect(methodInformation.parameterTypeEnums!.length).toBe(2)
+        expect(methodInformation.parameterTypeEnums![0]).toBe(TypeEnum.String)
+        expect(methodInformation.parameterTypeEnums![1]).toBe(TypeEnum.Number)
+
+        expect(methodInformation.parameterNames).toBeDefined()
+        expect(methodInformation.parameterNames.length).toBe(2)
+        expect(methodInformation.parameterNames[0]).toBe("name")
+        expect(methodInformation.parameterNames[1]).toBe("age")
+
         const classInformation = ClassMetadata.getInformation(ClassForTestingPurposes);
         expect(classInformation.properties.length).toBe(7);
         expect(classInformation.methods.length).toBe(3)
+
+
     })
 
     it("should return the Information fully filled for each property.", () => {

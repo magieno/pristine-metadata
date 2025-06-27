@@ -5,6 +5,9 @@ import {MethodInformationEnum} from "../enums/method-information.enum";
 import {BaseMetadata} from "./base.metadata";
 import {TypeUtils} from "../utils/type.utils";
 
+const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+const ARGUMENT_NAMES_REGEX = /([^\s,]+)/g;
+
 export class MethodMetadata {
     /**
      * This method structures and return all the metadata information that we have on this target and method.
@@ -17,8 +20,9 @@ export class MethodMetadata {
             name: methodName,
             metadata: {},
             parameterTypes: [],
-            parameterTypeObjects:[],
+            parameterTypeObjects: [],
             parameterTypeEnums: [],
+            parameterNames: [],
         };
 
         // Retrieve all the keys from the metadata
@@ -27,7 +31,7 @@ export class MethodMetadata {
         for (const key of keys) {
             const methodMetadata = MethodMetadata.getMetadata(target, methodName, key);
 
-            if(methodMetadata === undefined) {
+            if (methodMetadata === undefined) {
                 continue;
             }
 
@@ -44,6 +48,9 @@ export class MethodMetadata {
                     methodInformation.parameterTypes = methodMetadata.map((element: any) => element.name);
                     methodInformation.parameterTypeEnums = methodMetadata.map((element: any) => TypeUtils.getTypeFromMetadataStringRepresentation(element.name));
                     methodInformation.parameterTypeObjects = methodMetadata;
+                    break;
+                case MethodInformationEnum.ParameterNames:
+                    methodInformation.parameterNames = methodMetadata
                     break;
                 case MethodInformationEnum.Type:
                     methodInformation.typeObject = methodMetadata;
@@ -72,7 +79,7 @@ export class MethodMetadata {
      * @param destinationMethodKey
      * @param metadataKeysToIgnore
      */
-    static cloneMetadata(sourceTarget: any, destinationTarget: any, sourceMethodKey: string | symbol, destinationMethodKey?: string | symbol, metadataKeysToIgnore: string[] = [] ) {
+    static cloneMetadata(sourceTarget: any, destinationTarget: any, sourceMethodKey: string | symbol, destinationMethodKey?: string | symbol, metadataKeysToIgnore: string[] = []) {
         BaseMetadata.cloneMetadata(sourceTarget, destinationTarget, sourceMethodKey, destinationMethodKey, metadataKeysToIgnore)
     }
 
@@ -81,12 +88,27 @@ export class MethodMetadata {
      * decorator. Methods are not "saved" in the metadata and this library does it.
      * @param target
      * @param methodName
+     * @param descriptor
      */
-    static methodSeen(target: any, methodName: string | symbol) {
+    static methodSeen(target: any, methodName: string | symbol, descriptor?: PropertyDescriptor) {
         ClassMetadata.appendToMetadata(target, ClassInformationEnum.Methods, methodName, true)
 
+        if (descriptor && descriptor.value) {
+            const method = descriptor.value;
+            // Convert the method to its string representation.
+            // e.g., "function(param1, param2) { ... }"
+            const functionString = method.toString();
+
+            // Strip comments and extract the parameter names.
+            const stripped = functionString.replace(STRIP_COMMENTS, '');
+            const paramsMatch = stripped.slice(stripped.indexOf('(') + 1, stripped.indexOf(')'));
+            const paramNames = paramsMatch.match(ARGUMENT_NAMES_REGEX) || [];
+
+            BaseMetadata.defineMetadata(MethodInformationEnum.ParameterNames, paramNames, target.prototype, methodName);
+        }
+
         // Add this to ensure that the method is properly registered with the class
-        if(target && target.constructor) {
+        if (target && target.constructor) {
             // Save to the target that we have seen this property.
             ClassMetadata.appendToMetadata(target.constructor, ClassInformationEnum.Methods, methodName, true)
         }

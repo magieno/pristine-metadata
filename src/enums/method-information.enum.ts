@@ -4,4 +4,5 @@ export enum MethodInformationEnum {
     Type = "design:type",
     ReturnType = "design:returntype",
     ParameterTypes = "design:paramtypes",
+    ParameterNames = "design:paramnames",
 }

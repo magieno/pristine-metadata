@@ -50,6 +50,11 @@ export interface MethodInformationInterface {
     parameterTypeEnums: TypeEnum[];
 
     /**
+     * The list of parameter names for this method (in order).
+     */
+    parameterNames: string[];
+
+    /**
      * The list of parameter type objects for this method (in order).
      */
     parameterTypeObjects: any[];
