@@ -104,7 +104,11 @@ export class MethodMetadata {
             const paramsMatch = stripped.slice(stripped.indexOf('(') + 1, stripped.indexOf(')'));
             const paramNames = paramsMatch.match(ARGUMENT_NAMES_REGEX) || [];
 
-            BaseMetadata.defineMetadata(MethodInformationEnum.ParameterNames, paramNames, target.prototype, methodName);
+            if(target.prototype) {
+                BaseMetadata.defineMetadata(MethodInformationEnum.ParameterNames, paramNames, target.prototype, methodName);
+            }
+
+            BaseMetadata.defineMetadata(MethodInformationEnum.ParameterNames, paramNames, target, methodName);
         }
 
         // Add this to ensure that the method is properly registered with the class
@@ -151,10 +155,11 @@ export class MethodMetadata {
      * @param methodName
      * @param metadataKeyname
      * @param element
+     * @param descriptor
      */
-    static defineMetadata(target: any, methodName: string | symbol, metadataKeyname: string, element: any) {
+    static defineMetadata(target: any, methodName: string | symbol, metadataKeyname: string, element: any, descriptor?: PropertyDescriptor) {
         // Save to the target that we have seen this method.
-        MethodMetadata.methodSeen(target, methodName);
+        MethodMetadata.methodSeen(target, methodName, descriptor);
 
         // Define the element to the metadata using the "reflect-library".
         BaseMetadata.defineMetadata(metadataKeyname, element, target, methodName);
@@ -168,15 +173,17 @@ export class MethodMetadata {
      *
      * @param target
      * @param methodName
+     * @param descriptor
      * @param metadataKeyname
      * @param element
      * @param index
+     * @param skipIfDuplicate
      */
-    static setToMetadata(target: any, methodName: string | symbol, metadataKeyname: string, index: number | string, element: any, skipIfDuplicate: boolean = true) {
+    static setToMetadata(target: any, methodName: string | symbol, metadataKeyname: string, index: number | string, element: any, descriptor?: PropertyDescriptor, skipIfDuplicate: boolean = true) {
         BaseMetadata.setToMetadata(metadataKeyname, index, element, target, skipIfDuplicate, methodName)
 
         // Save to the target that we have seen this method.
-        MethodMetadata.methodSeen(target, methodName);
+        MethodMetadata.methodSeen(target, methodName, descriptor);
     }
 
     /**
@@ -184,10 +191,12 @@ export class MethodMetadata {
      * at the end of the array.
      * @param target
      * @param methodName
+     * @param descriptor
      * @param metadataKeyname
      * @param element
+     * @param skipIfDuplicate
      */
-    static appendToMetadata(target: any, methodName: string | symbol, metadataKeyname: string, element: any, skipIfDuplicate: boolean = true) {
-        MethodMetadata.setToMetadata(target, methodName, metadataKeyname, -1, element, skipIfDuplicate);
+    static appendToMetadata(target: any, methodName: string | symbol, metadataKeyname: string, element: any, descriptor?: PropertyDescriptor, skipIfDuplicate: boolean = true) {
+        MethodMetadata.setToMetadata(target, methodName, metadataKeyname, -1, element, descriptor, skipIfDuplicate);
     }
 }
